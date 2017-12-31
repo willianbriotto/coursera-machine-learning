@@ -18,6 +18,17 @@ grad = zeros(size(theta));
 %               derivatives of the cost w.r.t. each parameter in theta
 
 
+% J(θ) = (1/m) * −y(i) log(hθ(x(i)))−(1−y(i))log(1−hθ(x(i)))
+predictions = sigmoid(X * theta)
+
+theta_cp = theta
+theta_cp(1) = 0
+
+J = (1 / m) * ((-y' * log(predictions)) - ((1 - y') * log(1 - predictions))) + ((lambda / (2 * m)) * sum(theta_cp .^ 2))
+
+%(hθ(x(i))−y(i))x(i) -- Same that Linear, just change the hθ(x) that is changed to sigmoid
+grad = ((1/m) * (X' * (predictions - y))) + (lambda / m * theta_cp)
+
 
 
 
