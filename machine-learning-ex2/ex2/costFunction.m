@@ -21,11 +21,13 @@ grad = zeros(size(theta));
 %
 
 
+% J(θ) = (1/m) * −y(i) log(hθ(x(i)))−(1−y(i))log(1−hθ(x(i)))
 
+predictions = sigmoid(X * theta)
+J = (1 / m) * ((-y' * log(predictions)) - ((1 - y') * log(1 - predictions)))
 
-
-
-
+%(hθ(x(i))−y(i))x(i) -- Same that Linear, just change the hθ(x) that is changed to sigmoid
+grad = (1/m) * ((predictions - y)' * X)
 
 % =============================================================
 
