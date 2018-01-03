@@ -21,10 +21,21 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+%Add Column bias
+X = [ones(m, 1) X];
 
+%Layer 1
+A = sigmoid(X * Theta1');
 
+%Add Column bias
+A = [ones(m, 1) A];
 
+%Hidden Layer
+A = sigmoid(A * Theta2');
 
+%Columns with max values
+%Layer3 Output Layer
+[vals, p] = max(A, [], 2);
 
 
 
