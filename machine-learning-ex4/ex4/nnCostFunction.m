@@ -68,22 +68,46 @@ z2 = a1 * Theta1'; % z3 = Theta1 * a¹
 a2 = [ones(m, 1) sigmoid(z2)];% g(z²) (add a²0)
 
 z3 = a2 * Theta2'; % z3 = Theta2 * a²
-output = sigmoid(z3); % hO(x) = g(z')
+a3 = sigmoid(z3); % hO(x) = g(z')
 
 %1/m * (sum(−y(i)*log((hθ(x(i))))−(1−y(i))log(1−(hθ(x(i))))))
 for k = 1:num_labels % 10 labels
     %filter values for each item classification type
     yk = y == k;
-    J = J + 1 / m * sum(-yk .* log(output(:, k)) - (1 - yk) .* log(1 - output(:, k)));
+    J = J + 1 / m * sum(-yk .* log(a3(:, k)) - (1 - yk) .* log(1 - a3(:, k)));
 end
 
 J = J + (lambda / (2 * m) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2))));
 
 
+%I needed of help in this part, despite to appear relative simple now
+%https://github.com/merwan/ml-class/blob/master/mlclass-ex4/nnCostFunction.m
+for t=1:m,
+    %a1 = X(t,:);
+    %2. For each output unit k in layer 3 (the output layer), set
+    for k = 1:num_labels
+        %δ(3) = (a(3) −yk),
+        delta_3(k) = a3(t,k) - (y(t) == k); %yk
+    end;
+    
+    %3. For the hidden layer l = 2, set δ(2) =Θ(2)T δ(3).∗gT(z(2))
+    delta_2 = (Theta2' * delta_3') .* sigmoidGradient([1, z2(t,:)])';
+   
+    %4. Accumulate the gradient from this example using the following formula. 
+    %Note that you should skip or remove δ(2) 0 . 
+    %In Octave/MATLAB, removing δ(2) 0 corresponds to delta 2 = delta 2(2:end).
+    delta_2 = delta_2(2:end);
+    
+    %∆(l) = ∆(l) + δ(l+1)(a(l))T
+    Theta1_grad = Theta1_grad + delta_2 * a1(t, :);
+    Theta2_grad = Theta2_grad + delta_3' * a2(t, :);
+end;
 
+Theta1_grad = Theta1_grad / m;
+Theta2_grad = Theta2_grad / m;
 
-
-
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + lambda / m * Theta1(:, 2:end);
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + lambda / m * Theta2(:, 2:end);
 
 
 % -------------------------------------------------------------
