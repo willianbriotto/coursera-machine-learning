@@ -77,9 +77,7 @@ for k = 1:num_labels % 10 labels
     J = J + 1 / m * sum(-yk .* log(output(:, k)) - (1 - yk) .* log(1 - output(:, k)));
 end
 
-
-
-
+J = J + (lambda / (2 * m) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2))));
 
 
 
