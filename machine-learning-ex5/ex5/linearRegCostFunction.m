@@ -25,10 +25,7 @@ theta_cp(1) = 0;
 J = 1/(2*m)* sum(((X*theta) - y).^2) + ((lambda / (2 * m)) * sum(theta_cp .^ 2));
 
 
-
-
-
-
+grad = ((1/m) * X' * ((X*theta) - y)) + ((lambda / m) * theta_cp);
 
 
 
