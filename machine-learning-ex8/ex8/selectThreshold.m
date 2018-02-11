@@ -25,16 +25,42 @@ for epsilon = min(pval):stepsize:max(pval)
 
 
 
+    
+    %Implementation Note: In order to compute tp, fp and fn, you may be able to use a 
+    %vectorized implementation rather than loop over all the examples. This can be 
+    %implemented by Octave/MATLAB’s equality test between a vector and a single number. 
+    %If you have several binary values in an n-dimensional binary vector v ∈ {0,1}n, 
+    %you can ﬁnd out how many values in this vector are 0 by using: sum(v == 0). 
+    %You can also apply a logical and operator to such binary vectors. 
+    %For instance, let cvPredictions be a binary vector of the size of your number of 
+    %cross validation set, where the i-th element is 1 if your algorithm 
+    %considers x(i) cv an anomaly, and 0 otherwise. You can then, for example, compute the 
+    %number of false positives using: fp = sum((cvPredictions == 1) & (yval == 0)) 
 
 
+    predictions = (pval < epsilon);
 
+    %False positives
+    tp = sum((predictions == 1) & (yval == 1));
+    
+    %False positives
+    fp = sum((predictions == 1) & (yval == 0));
+    
+    %False negative
+    fn = sum((predictions == 0) & (yval == 1)); 
 
+    %You compute precision and recall by:
+    %prec = tp / tp + fp
+    %rec = tp / tp + fn
 
-
-
-
-
-
+    prec = tp / (tp + fp);
+    rec = tp / (tp + fn);
+    
+    %The F1 score is computed using precision (prec) and recall (rec):
+    %F1 = (2 * prec * rec) /  (prec + rec)
+    F1 = (2 * prec * rec) /  (prec + rec);
+    
+    
     % =============================================================
 
     if F1 > bestF1
